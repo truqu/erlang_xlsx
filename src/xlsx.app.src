@@ -7,5 +7,5 @@
    ]},
   {registered, []},
   {env, []},
-  {applications, [kernel, stdlib, z_stdlib]}
+  {applications, [kernel, stdlib, zotonic_stdlib]}
  ]}.
