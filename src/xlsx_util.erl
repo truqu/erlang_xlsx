@@ -6,8 +6,7 @@
 
 %% @doc Create new xlsx doc
 new() ->
-    Dir = tempfile(),
-    ok = file:make_dir(Dir),
+    {ok, Dir} = mktemp_dir("xlsx"),
     #xlsx{tmp=Dir}.
 
 get_sheets(#xlsx{sheets=Sheets}) ->
@@ -51,18 +50,11 @@ write(X, RelPath, Bytes) ->
 
 %% helpers
 
-tempfile() ->
-    filename:join(
-      temppath(),
-      lists:flatten(
-        io_lib:format("xlsx-~s-~p", [node(), erlang:unique_integer()])
-       )
-     ).
-
-
-%% @doc Returns the path where to store temporary files.
-temppath() ->
-    lists:foldl(fun(false, Fallback) -> Fallback;
-                   (Good, _) -> Good end,
-                "/tmp",
-                [os:getenv("TMP"), os:getenv("TEMP")]).
+mktemp_dir(Prefix) ->
+    Rand = integer_to_list(binary:decode_unsigned(crypto:strong_rand_bytes(8)), 36),
+    TempPath = filename:basedir(user_cache, Prefix ++ Rand),
+    Result = file:make_dir(TempPath),
+    case Result of
+        ok -> {ok, TempPath};
+        Error -> Error
+    end.
