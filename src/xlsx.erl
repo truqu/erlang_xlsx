@@ -6,7 +6,8 @@
 
 create(Sheets, OutFile) ->
     Xlsx0 = xlsx_util:new(),
-    Xlsx1 = Xlsx0#xlsx{sheets=Sheets},
+    Sheets2 = lists:map(fun make_sheet/1, Sheets),
+    Xlsx1 = Xlsx0#xlsx{sheets=Sheets2},
     {ok, Xlsx2} = lists:foldl(fun({Idx, {_Name, Rows, ColInfo}}, {ok, Acc}) ->
                                 I = integer_to_list(Idx),
                                 xlsx_util:write(
@@ -27,6 +28,10 @@ create(Sheets, OutFile) ->
                       ]),
     xlsx_util:write(XlsxNew, OutFile).
 
+make_sheet({Name, Rows}) ->
+    {Name, Rows, []};
+make_sheet(Sheet = {_, _, _}) ->
+    Sheet.
 
 numbered_sheets(#xlsx{sheets=Sheets}) ->
     lists:zip(lists:seq(1,length(Sheets)), Sheets).
@@ -186,4 +191,4 @@ add_styles(Xlsx) ->
        "  <cellStyle builtinId=\"5\" customBuiltin=\"false\" name=\"Percent\" xfId=\"19\"/>"
        "</cellStyles>"
        "</styleSheet>"
-      ]).       
+      ]).

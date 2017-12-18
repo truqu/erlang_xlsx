@@ -52,8 +52,12 @@ write(X, RelPath, Bytes) ->
 %% helpers
 
 tempfile() ->
-    {A,B,C}=erlang:now(),
-    filename:join(temppath(), lists:flatten(io_lib:format("xlsx-~s-~p.~p.~p",[node(),A,B,C]))).
+    filename:join(
+      temppath(),
+      lists:flatten(
+        io_lib:format("xlsx-~s-~p", [node(), erlang:unique_integer()])
+       )
+     ).
 
 
 %% @doc Returns the path where to store temporary files.
@@ -62,4 +66,3 @@ temppath() ->
                    (Good, _) -> Good end,
                 "/tmp",
                 [os:getenv("TMP"), os:getenv("TEMP")]).
-              

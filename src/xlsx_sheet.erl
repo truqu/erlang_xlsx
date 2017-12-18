@@ -48,7 +48,7 @@ encode(I) when is_integer(I) ->
     {n, ["<v>", integer_to_list(I), "</v>"], 3};
 encode(F) when is_float(F) ->
     {n, ["<v>", float_to_list(F), "</v>"], 4};
-encode(Dt = {{_,_,_},{_,_,_}}) ->
+encode(_ = {{_,_,_},{_,_,_}}) ->
     {n, ["<v>111</v>"], 3};
 %% @doc bold
 encode({b, Str}) ->
