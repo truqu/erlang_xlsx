@@ -6,7 +6,8 @@
 
 create(Sheets, OutFile) ->
     Xlsx0 = xlsx_util:new(),
-    Xlsx1 = Xlsx0#xlsx{sheets=Sheets},
+    Sheets2 = lists:map(fun make_sheet/1, Sheets),
+    Xlsx1 = Xlsx0#xlsx{sheets=Sheets2},
     {ok, Xlsx2} = lists:foldl(fun({Idx, {_Name, Rows, ColInfo}}, {ok, Acc}) ->
                                 I = integer_to_list(Idx),
                                 xlsx_util:write(
@@ -27,6 +28,10 @@ create(Sheets, OutFile) ->
                       ]),
     xlsx_util:write(XlsxNew, OutFile).
 
+make_sheet({Name, Rows}) ->
+    {Name, Rows, []};
+make_sheet(Sheet = {_, _, _}) ->
+    Sheet.
 
 numbered_sheets(#xlsx{sheets=Sheets}) ->
     lists:zip(lists:seq(1,length(Sheets)), Sheets).
@@ -176,7 +181,6 @@ add_styles(Xlsx) ->
 
        %% string filled
        "  <xf applyAlignment=\"false\" applyBorder=\"false\" applyFont=\"true\" applyProtection=\"false\" borderId=\"0\" fillId=\"1\" fontId=\"0\" numFmtId=\"49\" xfId=\"0\"></xf>"
-       
        "</cellXfs>"
        "<cellStyles count=\"6\"><cellStyle builtinId=\"0\" customBuiltin=\"false\" name=\"Normal\" xfId=\"0\"/>"
        "  <cellStyle builtinId=\"3\" customBuiltin=\"false\" name=\"Comma\" xfId=\"15\"/>"
@@ -186,4 +190,4 @@ add_styles(Xlsx) ->
        "  <cellStyle builtinId=\"5\" customBuiltin=\"false\" name=\"Percent\" xfId=\"19\"/>"
        "</cellStyles>"
        "</styleSheet>"
-      ]).       
+      ]).

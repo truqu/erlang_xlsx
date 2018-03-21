@@ -2,9 +2,9 @@
 
 main([]) ->
     true = code:add_pathz(filename:dirname(escript:script_name()) 
-                          ++ "/ebin"),
+                          ++ "/_build/default/lib/xlsx/ebin"),
     true = code:add_pathz(filename:dirname(escript:script_name()) 
-                          ++ "/deps/z_stdlib/ebin"),
+                          ++ "/_build/default/lib/z_stdlib/ebin"),
 
     xlsx:create([{"Sheet nr 1",
                   [[1,2,3,true], ["hallo"]]},
