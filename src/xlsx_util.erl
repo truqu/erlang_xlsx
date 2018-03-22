@@ -53,6 +53,7 @@ write(X, RelPath, Bytes) ->
 mktemp_dir(Prefix) ->
     Rand = integer_to_list(binary:decode_unsigned(crypto:strong_rand_bytes(8)), 36),
     TempPath = filename:basedir(user_cache, Prefix ++ Rand),
+    ok = filelib:ensure_dir(TempPath),
     Result = file:make_dir(TempPath),
     case Result of
         ok -> {ok, TempPath};
